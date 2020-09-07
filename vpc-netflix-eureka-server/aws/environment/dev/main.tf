@@ -66,7 +66,7 @@ module "ec2-eureka-server" {
   associate_public_ip_address   = "true"
   root_volume_size              = 10
   subnet_ids                    = module.vpc.public-subnet-ids
-  vpc_security_group_ids        = [module.sg2.aws_security_group_default]
+  vpc_security_group_ids        = [module.sg1.aws_security_group_default]
 
 }
 
@@ -74,7 +74,7 @@ module "eureka-services" {
   source                        = "../../modules/aws-ec2"
   namespace                     = "cloudgeeks.ca"
   stage                         = "dev"
-  name                          = "ptvsports-cloudgeeks-ca"
+  name                          = "eureka-services"
   key_name                      = "eureka-service"
   public_key                    = file("../../modules/secrets/eureka-service.pub")
   user_data                     = file("../../modules/aws-ec2/user-data/user-data.sh")
