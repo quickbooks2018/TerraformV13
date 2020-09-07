@@ -59,7 +59,7 @@ module "ec2-eureka-server" {
   name                          = "eureka-server"
   key_name                      = "eureka-server"
   public_key                    = file("../../modules/secrets/eureka-server.pub")
-  user_data                     = file("../../modules/aws-ec2/user-data/user-data.sh")
+  user_data                     = file("../../modules/aws-ec2/user-data/eureka-server.sh")
   instance_count                = 1
   ami                           = "ami-0fc61db8544a617ed"
   instance_type                 = "t3a.medium"
@@ -70,21 +70,39 @@ module "ec2-eureka-server" {
 
 }
 
-module "eureka-services" {
+module "eureka-shirts" {
   source                        = "../../modules/aws-ec2"
   namespace                     = "cloudgeeks.ca"
   stage                         = "dev"
-  name                          = "eureka-services"
-  key_name                      = "eureka-service"
-  public_key                    = file("../../modules/secrets/eureka-service.pub")
-  user_data                     = file("../../modules/aws-ec2/user-data/user-data.sh")
+  name                          = "eureka-shirts"
+  key_name                      = "shirts"
+  public_key                    = file("../../modules/secrets/shirts.pub")
+  user_data                     = file("../../modules/aws-ec2/user-data/eureka-shirts.sh")
   instance_count                = 1
   ami                           = "ami-0fc61db8544a617ed"
   instance_type                 = "t3a.medium"
   associate_public_ip_address   = "true"
   root_volume_size              = 10
   subnet_ids                    = module.vpc.public-subnet-ids
-  vpc_security_group_ids        = [module.sg2.aws_security_group_default]
+  vpc_security_group_ids        = [module.sg1.aws_security_group_default]
+
+}
+
+module "eureka-shopping-cart" {
+  source                        = "../../modules/aws-ec2"
+  namespace                     = "cloudgeeks.ca"
+  stage                         = "dev"
+  name                          = "eureka-shopping-cart"
+  key_name                      = "shopping-cart"
+  public_key                    = file("../../modules/secrets/shopping-cart.pub")
+  user_data                     = file("../../modules/aws-ec2/user-data/eureka-shopping-cart.sh")
+  instance_count                = 1
+  ami                           = "ami-0fc61db8544a617ed"
+  instance_type                 = "t3a.medium"
+  associate_public_ip_address   = "true"
+  root_volume_size              = 10
+  subnet_ids                    = module.vpc.public-subnet-ids
+  vpc_security_group_ids        = [module.sg1.aws_security_group_default]
 
 }
 
