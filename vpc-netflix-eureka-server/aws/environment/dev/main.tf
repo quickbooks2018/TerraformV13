@@ -106,3 +106,22 @@ module "eureka-shopping-cart" {
 
 }
 
+
+module "eureka-shirts-plus-shopping-cart" {
+  source                        = "../../modules/aws-ec2"
+  namespace                     = "cloudgeeks.ca"
+  stage                         = "dev"
+  name                          = "eureka-multiple-services"
+  key_name                      = "eureka-multiple-services"
+  public_key                    = file("../../modules/secrets/eureka-multiple-services.pub")
+  user_data                     = file("../../modules/aws-ec2/user-data/eureka-shirts-plus-shopping-cart.sh")
+  instance_count                = 1
+  ami                           = "ami-0fc61db8544a617ed"
+  instance_type                 = "t3a.medium"
+  associate_public_ip_address   = "true"
+  root_volume_size              = 10
+  subnet_ids                    = module.vpc.public-subnet-ids
+  vpc_security_group_ids        = [module.sg1.aws_security_group_default]
+
+}
+
