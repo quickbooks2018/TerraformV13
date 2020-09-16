@@ -48,22 +48,22 @@ module "sg2" {
 
 
 
-module "docker-eip" {
+module "apachebench-eip" {
   source = "../../modules/aws-eip/docker"
-  name                         = "docker"
-  instance                     = module.ec2-docker.id[0]
+  name                         = "apachebench"
+  instance                     = module.ec2-apachebench.id[0]
 }
 
-module "ec2-docker" {
+module "ec2-apachebench" {
   source                        = "../../modules/aws-ec2"
   namespace                     = "cloudgeeks.ca"
   stage                         = "dev"
-  name                          = "docker"
+  name                          = "apachebench"
   key_name                      = "ecs"
   public_key                    = file("../../modules/secrets/ecs.pub")
   user_data                     = file("../../modules/aws-ec2/user-data/user-data.sh")
   instance_count                = 1
-  ami                           = "ami-0fc61db8544a617ed"
+  ami                           = "ami-00eb20669e0990cb4"
   instance_type                 = "t3a.medium"
   associate_public_ip_address   = "true"
   root_volume_size              = 10
