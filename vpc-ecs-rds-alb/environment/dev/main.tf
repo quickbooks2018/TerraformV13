@@ -13,7 +13,7 @@ module "vpc" {
   vpc-location                        = "Virginia"
   namespace                           = "cloudgeeks.ca"
   name                                = "vpc"
-  stage                               = "docker-dev"
+  stage                               = "ecs-dev"
   map_public_ip_on_launch             = "true"
   total-nat-gateway-required          = "1"
   create_database_subnet_group        = "true"
@@ -49,7 +49,7 @@ module "sg2" {
 
 
 module "apachebench-eip" {
-  source = "../../modules/aws-eip/docker"
+  source = "../../modules/aws-eip/ecs"
   name                         = "apachebench"
   instance                     = module.ec2-apachebench.id[0]
 }
