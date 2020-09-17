@@ -22,15 +22,6 @@ resource "aws_alb_listener" "frontend-listner-80" {
   port = 80
 }
 
-resource "aws_alb_listener" "frontend-listner-8080" {
-  default_action {
-    target_group_arn = var.target-group-arn
-    type = "forward"
-  }
-  load_balancer_arn = aws_lb.alb.arn
-  port = 8080
-}
-
 
 resource "aws_alb_listener" "frontend-listner-443" {
   default_action {
