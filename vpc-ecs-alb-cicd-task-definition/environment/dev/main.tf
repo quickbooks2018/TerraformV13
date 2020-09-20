@@ -127,9 +127,9 @@ module "ecs" {
 
 module "aws-ecs-task-definition" {
   source                       = "../../modules/aws-ecs-task-definition"
-  ecs_task_definition_name     = "islam"
-  task-definition-cpu          = 2048
-  task-definition-memory       = 4096
+  ecs_task_definition_name     = var.task-definition-name
+  task-definition-cpu          = var.task-definition-cpu
+  task-definition-memory       = var.task-definition-memory
   cloudwatch-group             = var.cloudwatch-group
   container-definitions        = <<DEFINITION
   [
@@ -139,16 +139,16 @@ module "aws-ecs-task-definition" {
         "essential": true,
         "portMappings": [
           {
-            "containerPort": 80,
-            "hostPort": 80
+            "containerPort": ${var.fargate-container-port},
+            "hostPort": ${var.fargate-container-port}
           }
         ],
         "logConfiguration": {
           "logDriver": "awslogs",
           "options": {
             "awslogs-group": "${var.cloudwatch-group}",
-            "awslogs-region": "us-east-1",
-            "awslogs-stream-prefix": "quickbooks2018"
+            "awslogs-region": "${var.aws-region}",
+            "awslogs-stream-prefix": "${var.log-stream-prefix}"
           }
         }
       }
