@@ -8,6 +8,7 @@ task-definition-memory = 2048
 container-name         = "path-blue"
 repository-uri         = "121403310988.dkr.ecr.us-east-1.amazonaws.com/quickbooks2018/path-blue"
 fargate-container-port = 80
+
 # Cloud Watch Logs
 cloudwatch-group        = "/ecs/quickbooks2018"
 aws-region              = "us-east-1"
