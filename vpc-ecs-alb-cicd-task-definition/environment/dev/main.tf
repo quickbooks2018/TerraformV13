@@ -98,23 +98,38 @@ module "alb-ref" {
 }
 
 module "alb-tg" {
-  source = "../../modules/aws-alb-tg"
+  source = "../../modules/aws-alb-tg-type-instance"
   #Application Load Balancer Target Group
   alb-tg-name               = "cloudgeeks-tg"
   target-group-port         = "80"
   target-group-protocol     = "HTTP"
   vpc-id                    = module.vpc.vpc-id
+  # Health
+  health-check             = true
+  interval                 = "5"
+  path                     = "/"
+  port                     = "80"
+  protocol                 = "HTTP"
+  timeout                  = "3"
+  unhealthy-threshold      = "3"
+  matcher                  = "200,202"
+
+
 }
 
 
 module "alb" {
   source = "../../modules/aws-alb"
-  alb-name                 = "cloudgeeks-alb"
-  internal                 = "false"
-  alb-sg                   = module.alb-sg.aws_security_group_default
-  alb-subnets              = module.vpc.public-subnet-ids
-  alb-tag                  = "cloudgeeks-alb"
-  target-group-arn         = module.alb-tg.target-group-arn
+  alb-name                   = "cloudgeeks-alb"
+  internal                   = "false"
+  alb-sg                     = module.alb-sg.aws_security_group_default
+  alb-subnets                = module.vpc.public-subnet-ids
+  alb-tag                    = "cloudgeeks-alb"
+  enable-deletion-protection = "false"
+  target-group-arn           = module.service-alb-tg.target-group-arn
+  # ALB Rules
+  rule-path                  = "/blue*"
+
 }
 
 
@@ -122,6 +137,7 @@ module "ecs" {
   source                    = "../../modules/aws-ecs"
   name                      = "cloudgeeks-ecs-dev"
   container-insights        = "enabled"
+  depends_on                = [module.alb]
 }
 
 
@@ -156,3 +172,42 @@ module "aws-ecs-task-definition" {
 DEFINITION
 
 }
+
+module "service-alb-tg" {
+  source = "../../modules/aws-alb-tg-type-ip"
+  #Application Load Balancer Target Group
+  alb-tg-name               = "ecs-bluepath-tg"
+  target-group-port         = "80"
+  target-group-protocol     = "HTTP"
+  target-type               = "ip"
+  vpc-id                    = module.vpc.vpc-id
+  # Health
+  health-check              = true
+  interval                  = "5"
+  path                      = "/blue/index.html"
+  port                      = "80"
+  protocol                  = "HTTP"
+  timeout                   = "3"
+  unhealthy-threshold       = "3"
+  matcher                   = "200,202"
+
+}
+
+module "aws-ecs-service" {
+  source = "../../modules/aws-ecs-service"
+  aws-ecs-service-name               = "blue"
+  ecs-cluster-id                     = module.ecs.aws-ecs-cluster-id
+  deployment-minimum-healthy-percent = "100"
+  deployment-maximum-percent         = "200"
+  security-groups                    = [module.alb-ref.aws_security_group_default]
+  private-subnets                    = module.vpc.private-subnet-ids
+  assign-public-ip                   = "false"
+  task-definition                    = module.aws-ecs-task-definition.ecs-taks-definitions-arn
+  desired-count                      = 2
+  health-check-grace-period-seconds  = "180"
+  target-group-arn                   = module.service-alb-tg.target-group-arn
+  container-name                     = var.container-name
+  container-port                     = var.fargate-container-port
+  depends_on                         = [module.alb]
+}
+

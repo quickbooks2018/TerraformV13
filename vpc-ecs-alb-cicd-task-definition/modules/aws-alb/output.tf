@@ -1,5 +1,5 @@
 #OUTPUT
-output "aws-alb" {
-  value = aws_lb.alb.id
+output "aws-alb-arn" {
+  value = aws_lb.alb.arn
 }
 

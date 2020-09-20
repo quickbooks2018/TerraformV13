@@ -16,6 +16,8 @@ variable "alb-subnets" {
   type = list(string)
 }
 
+variable "enable-deletion-protection" {}
+
 variable "alb-tag" {
   default = ""
 }
@@ -26,4 +28,8 @@ variable "target-group-arn" {
 
 variable "certificate-arn" {
   default = ""
+}
+
+variable "rule-path" {
+  default = "/"
 }

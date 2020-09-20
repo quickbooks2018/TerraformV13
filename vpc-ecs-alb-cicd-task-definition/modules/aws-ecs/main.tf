@@ -23,8 +23,15 @@ resource "aws_ecs_cluster" "aws-ecs-cluster" {
 
   default_capacity_provider_strategy {
     capacity_provider = "FARGATE"
-  }
+    base = 1
+    weight = 5
 
+  }
+default_capacity_provider_strategy {
+  capacity_provider = "FARGATE_SPOT"
+  base = 0
+  weight = 20
+}
 
   setting {
     name = "containerInsights"

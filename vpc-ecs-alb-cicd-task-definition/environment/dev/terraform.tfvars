@@ -6,7 +6,7 @@ task-definition-memory = 2048
 
 # Container Definition
 container-name         = "path-blue"
-repository-uri         = "121403310988.dkr.ecr.us-east-1.amazonaws.com/quickbooks2018/path-blue"
+repository-uri         = "quickbooks2018/path-blue"
 fargate-container-port = 80
 
 # Cloud Watch Logs
