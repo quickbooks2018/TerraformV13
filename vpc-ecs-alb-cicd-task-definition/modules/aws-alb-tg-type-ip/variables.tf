@@ -5,6 +5,10 @@ variable "target-group-port" {
   default = ""
 }
 
+variable "deregistration_delay" {
+  default = "5"
+}
+
 variable "target-group-protocol" {
   default = ""
 }

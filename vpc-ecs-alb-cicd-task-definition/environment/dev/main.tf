@@ -180,6 +180,7 @@ module "service-alb-tg" {
   target-group-port         = "80"
   target-group-protocol     = "HTTP"
   target-type               = "ip"
+  deregistration_delay      = "1"
   vpc-id                    = module.vpc.vpc-id
   # Health
   health-check              = true
