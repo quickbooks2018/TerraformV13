@@ -18,4 +18,65 @@ resource "aws_ecs_service" "aws-ecs-service" {
     subnets          = var.private-subnets
     assign_public_ip = var.assign-public-ip
   }
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [desired_count]
+  }
+
+}
+
+# Auto Scaling
+resource "aws_appautoscaling_target" "ecs_target" {
+  max_capacity       = var.max-capacity
+  min_capacity       = var.min-capacity
+  resource_id        = "service/${var.aws-ecscluster-name}/${var.aws-ecs-service-name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+  depends_on = [aws_ecs_service.aws-ecs-service]
+
+}
+
+
+
+# CPU Utilization
+resource "aws_appautoscaling_policy" "ecs_policy_cpu" {
+  name               = "cpu-autoscaling"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    scale_in_cooldown  = 300
+    scale_out_cooldown = 300
+
+    target_value       = var.cpu-exceeds-percentage
+  }
+  depends_on = [aws_appautoscaling_target.ecs_target]
+}
+
+# Memory Utilization
+resource "aws_appautoscaling_policy" "ecs_policy_memory" {
+  name               = "memory-autoscaling"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
+    }
+
+    scale_in_cooldown  = 300
+    scale_out_cooldown = 300
+
+    target_value       = var.memory-exceeds-percentage
+
+  }
+  depends_on = [aws_appautoscaling_target.ecs_target]
 }

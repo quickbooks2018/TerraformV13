@@ -196,19 +196,27 @@ module "service-alb-tg" {
 
 module "aws-ecs-service" {
   source = "../../modules/aws-ecs-service"
-  aws-ecs-service-name               = "blue"
-  ecs-cluster-id                     = module.ecs.aws-ecs-cluster-id
-  deployment-minimum-healthy-percent = "100"
-  deployment-maximum-percent         = "200"
-  security-groups                    = [module.alb-ref.aws_security_group_default]
-  private-subnets                    = module.vpc.private-subnet-ids
-  assign-public-ip                   = "false"
-  task-definition                    = module.aws-ecs-task-definition.ecs-taks-definitions-arn
-  desired-count                      = 2
-  health-check-grace-period-seconds  = "180"
-  target-group-arn                   = module.service-alb-tg.target-group-arn
-  container-name                     = var.container-name
-  container-port                     = var.fargate-container-port
-  depends_on                         = [module.alb]
+  aws-ecscluster-name                 = module.ecs.aws-ecs-cluster-name
+  aws-ecs-service-name                = "blue"
+  ecs-cluster-id                      = module.ecs.aws-ecs-cluster-id
+  deployment-minimum-healthy-percent  = "100"
+  deployment-maximum-percent          = "200"
+  security-groups                     = [module.alb-ref.aws_security_group_default]
+  private-subnets                     = module.vpc.private-subnet-ids
+  assign-public-ip                    = "false"
+  task-definition                     = module.aws-ecs-task-definition.ecs-taks-definitions-arn
+  # Auto Scaling of Tasks
+  min-capacity                        = 2
+  max-capacity                        = 5
+  desired-count                       = 3
+  # CPU-Exceeds-Percentage
+  cpu-exceeds-percentage              = 80
+  # Memory-Exceeds-Percentage
+  memory-exceeds-percentage           = 90
+  health-check-grace-period-seconds   = "180"
+  target-group-arn                    = module.service-alb-tg.target-group-arn
+  container-name                      = var.container-name
+  container-port                      = var.fargate-container-port
+  depends_on                          = [module.alb]
 }
 
