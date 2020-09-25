@@ -6,7 +6,7 @@ task-definition-memory = 2048
 
 # Container Definition
 container-name         = "ecs-springboot-rds-secrets-manager"
-repository-uri         = "quickbooks2018/rds-aws-secret-manager:latest"
+repository-uri         = "quickbooks2018/spring-boot-secret-manager-rds-mysql-access"
 fargate-container-port = 80
 
 # Cloud Watch Logs
