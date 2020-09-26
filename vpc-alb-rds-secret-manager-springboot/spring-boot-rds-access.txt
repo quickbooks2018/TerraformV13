@@ -36,10 +36,12 @@ dbpassword=`echo $password`
 
 # url
 ############################################################################################################################################################################
+aws rds describe-db-instances --db-instance-identifier springboot-db | grep -i -A 4 endpoint
+
 aws secretsmanager create-secret --name url --description "RDS END POINT" --secret-string "jdbc:mysql://springboot-db.c4gvraiulxqm.us-east-1.rds.amazonaws.com:3306/mysql"
 url=`aws secretsmanager get-secret-value --secret-id url --region us-east-1 | jq .SecretString`
 rdsendpoint=`echo $url`
-###############################################################################################################################################################################
+#############################################################################################################################################################################
 
 echo $rdsendpoint
 echo $user
