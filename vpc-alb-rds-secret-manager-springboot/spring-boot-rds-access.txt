@@ -17,7 +17,7 @@ aws secretsmanager get-secret-value --secret-id user --region us-east-1 | jq .Se
 
 # Update Existing Secrets
 
-aws secretsmanager update-secret --secret-id url --description "This is a new description for the secret." --secret-string "jdbc:mysql://springboot-db.ce9hcrwrmpdb.us-east-1.rds.amazonaws.com:3306/mysql"
+aws secretsmanager update-secret --secret-id url --description "This is a new description for the secret." --secret-string "jdbc:mysql://springboot-db.ce9hcrwrmpdb.us-east-1.rds.amazonaws.com:3306/springbootdb"
 ################################################################################################################################################
 
 # user
@@ -38,7 +38,7 @@ dbpassword=`echo $password`
 ############################################################################################################################################################################
 aws rds describe-db-instances --db-instance-identifier springboot-db | grep -i -A 4 endpoint
 
-aws secretsmanager create-secret --name url --description "RDS END POINT" --secret-string "jdbc:mysql://springboot-db.c4gvraiulxqm.us-east-1.rds.amazonaws.com:3306/mysql"
+aws secretsmanager create-secret --name url --description "RDS END POINT" --secret-string "jdbc:mysql://springboot-db.c4gvraiulxqm.us-east-1.rds.amazonaws.com:3306/springbootdb"
 url=`aws secretsmanager get-secret-value --secret-id url --region us-east-1 | jq .SecretString`
 rdsendpoint=`echo $url`
 #############################################################################################################################################################################
@@ -47,7 +47,7 @@ echo $rdsendpoint
 echo $user
 echo $password
 
-docker run --name springboot-rds-secrets -e url='jdbc:mysql://springboot-db.c4gvraiulxqm.us-east-1.rds.amazonaws.com:3306/mysql' -e user="$dbuser" -e password="$dbpassword" -id quickbooks2018/spring-boot-secret-manager-rds-mysql-access:latest
+docker run --name springboot-rds-secrets -e url='jdbc:mysql://springboot-db.c4gvraiulxqm.us-east-1.rds.amazonaws.com:3306/springbootdb' -e user="$dbuser" -e password="$dbpassword" -id quickbooks2018/spring-boot-secret-manager-rds-mysql-access:latest
 
 
 
