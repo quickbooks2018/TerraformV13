@@ -1,0 +1,6 @@
+#AWS SMTP Server Environment Variables
+AWS_MAIL_SERVER_HOST=aws-mail-server-host
+SMTP-PORT=587
+AWS_MAIL_SERVER_USERNAME=aws-mail-server-username
+AWS_MAIL_SERVER_PASSWORD=12345678
+AWS_MAIL_SERVER_FROM_ADDRESS=1@yahoo.com
