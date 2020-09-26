@@ -40,14 +40,14 @@ module "rds-mysql" {
   db-instance-class                                                = "db.t2.micro"
   backup-retension-period                                          = "0"
   backup-window                                                    = "04:00-06:00"
-  publicly-accessible                                              = "true"
+  publicly-accessible                                              = "false"
   rds-username                                                     = var.rds-username
   rds-password                                                     = var.rds-password
   multi-az                                                         = "true"
   storage-encrypted                                                = "false"
   deletion-protection                                              = "false"
   vpc-security-group-ids                                           = [module.sg1.aws_security_group_default]
-  subnet_ids                                                       = module.vpc.public-subnet-ids
+  subnet_ids                                                       = module.vpc.private-subnet-ids
 }
 
 
