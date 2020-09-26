@@ -84,7 +84,9 @@ user=asim
 password=12345678
 url=jdbc:mysql://springboot-db.ce9hcrwrmpdb.us-east-1.rds.amazonaws.com:3306/mysql
 
+### mysql ###
 
+apk add mysql-client
 
 
 ### AWS CLI Installation ####
