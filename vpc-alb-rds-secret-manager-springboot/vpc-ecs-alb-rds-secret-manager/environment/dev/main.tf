@@ -231,7 +231,7 @@ module "aws-ecs-service" {
   security-groups                     = [module.alb-ref.aws_security_group_default]
   private-subnets                     = module.vpc.private-subnet-ids
   assign-public-ip                    = "false"
-  task-definition                     = module.aws-ecs-task-definition.ecs-taks-definitions-arn
+  task-definition                     = module.aws-ecs-task-definition.ecs-task-definitions-arn
   # Auto Scaling of Tasks
   min-capacity                        = 2
   max-capacity                        = 5
