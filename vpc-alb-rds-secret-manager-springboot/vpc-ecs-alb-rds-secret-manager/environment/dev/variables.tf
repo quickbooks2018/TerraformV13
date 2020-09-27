@@ -5,7 +5,7 @@ variable "rds-username" {}
 variable "rds-password" {}
 
 
-# Container Definiton
+# Container Definition
 variable "container-name" {}
 
 variable "repository-uri" {}
