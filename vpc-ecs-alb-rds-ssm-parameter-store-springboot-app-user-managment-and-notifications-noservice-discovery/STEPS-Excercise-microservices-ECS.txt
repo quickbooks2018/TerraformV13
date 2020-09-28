@@ -1,0 +1,35 @@
+1. ### List of Docker Images used in this section ###-------------------------------------------> https://github.com/spotify/docker-maven-plugin
+| Application Name                 | Docker Image Name                          |                 https://github.com/spotify/dockerfile-maven
+| ------------------------------- | --------------------------------------------- |
+| User Management Microservice | quickbooks2018/microservice-user-management:latest |
+| Notifications Microservice | quickbooks2018/microservice-notifications:latest |
+
+
+2. Terraform apply
+
+3. Run SSM Script
+
+4. Terraform main.tf ---> Container Definition
+
+5. ### AWS SES SMTP Environment Variables with Secret Manager ### ---> simply copy these details from Console output
+
+Server Name:	
+email-smtp.us-east-1.amazonaws.com
+Port:	25, 465 or 587
+Use Transport Layer Security (TLS):	Yes
+Authentication:	Your SMTP credentials. See below for more information.
+
+this_access_key = AKIA6KE3S47HOOG5C73B
+this_ses_smtp_password = BD920P0iCvhKKd//kzJNJv0aGyE0k5UipSQnaF2cCLlJ
+this_user_arn = arn:aws:iam::983873808334:user/smtp-user
+this_user_name = smtp-user
+
+
+
+
+
+
+
+
+
+
