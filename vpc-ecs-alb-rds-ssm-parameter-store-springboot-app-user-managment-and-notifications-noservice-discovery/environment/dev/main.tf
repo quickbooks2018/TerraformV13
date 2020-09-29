@@ -371,7 +371,7 @@ module "aws-ecs-task-definition-notification-service" {
           "options": {
             "awslogs-group": "${var.cloudwatch-group}",
             "awslogs-region": "${var.aws-region}",
-            "awslogs-stream-prefix": "${var.notification-container-log-stream-prefix}"
+            "awslogs-stream-prefix": "${var.user-management-container-log-stream-prefix}"
           }
         }
       }

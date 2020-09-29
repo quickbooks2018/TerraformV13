@@ -1,4 +1,5 @@
 # ECS Task Definition & Container Definition
+
 # Task Definition for User Management Service
 task-definition-name-user-management-service              = "microservice-user-management"
 task-definition-cpu                                      = 1024
