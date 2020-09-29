@@ -9,7 +9,8 @@ microservice-user-management-container-name              = "microservice-user-ma
 microservice-user-management-repository-uri              = "quickbooks2018/microservice-user-management:latest"
 microservice-user-management-fargate-container-port      = 8095
 
+
 # Cloud Watch Logs For User Management Service
-cloudwatch-group                                         = "/ecs/quickbooks2018"
-aws-region                                               = "us-east-1"
-notification-container-log-stream-prefix                 = "microservice-user-management"
+cloudwatch-group                                          = "/ecs/quickbooks2018"
+aws-region                                                = "us-east-1"
+user-management-container-log-stream-prefix               = "microservice-user-management"

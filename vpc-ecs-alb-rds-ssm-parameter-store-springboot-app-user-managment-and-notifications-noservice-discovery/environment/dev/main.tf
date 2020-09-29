@@ -241,7 +241,7 @@ module "aws-ecs-task-definition-user-management" {
           "options": {
             "awslogs-group": "${var.cloudwatch-group}",
             "awslogs-region": "${var.aws-region}",
-            "awslogs-stream-prefix": "${var.notification-container-log-stream-prefix}"
+            "awslogs-stream-prefix": "${var.user-management-container-log-stream-prefix}"
           }
         }
       }
@@ -314,6 +314,69 @@ module "smtp-ses" {
   source = "../../modules/aws-ses"
   email-verification                        = "quickbooks2018@gmail.com"
   user_name                                 = "smtp-user"
+
+}
+
+
+# ECS Task Definition for ---> task-definition-notification-service
+
+module "aws-ecs-task-definition-notification-service" {
+  source                       = "../../modules/aws-ecs-task-definition"
+  ecs_task_definition_name     = var.task-definition-name-notification-service
+  task-definition-cpu          = var.task-definition-cpu
+  task-definition-memory       = var.task-definition-memory
+  cloudwatch-group             = var.cloudwatch-group
+  container-definitions        = <<DEFINITION
+  [
+      {
+        "name": "${var.microservice-user-management-container-name}",
+        "image": "${var.microservice-user-management-repository-uri}",
+        "essential": true,
+        "portMappings": [
+          {
+            "containerPort": ${var.microservice-user-management-fargate-container-port},
+            "hostPort": ${var.microservice-user-management-fargate-container-port}
+          }
+        ],
+        "secrets": [
+                {
+                    "name": "AWS_RDS_HOSTNAME",
+                    "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_HOSTNAME"
+                },
+                 {
+                      "name": "AWS_RDS_DB_NAME",
+                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_DB_NAME"
+                  },
+                  {
+                      "name": "AWS_RDS_USERNAME",
+                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_USERNAME"
+                  },
+                  {
+                      "name": "AWS_RDS_PASSWORD",
+                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_DB_PASSWORD"
+                  }
+            ],
+                "environment": [
+                {
+                    "name": "AWS_RDS_PORT",
+                    "value": "3306"
+                },
+                {
+                      "name": "NOTIFICATION_SERVICE_PORT",
+                     "value": "80"
+                  }
+            ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "${var.cloudwatch-group}",
+            "awslogs-region": "${var.aws-region}",
+            "awslogs-stream-prefix": "${var.notification-container-log-stream-prefix}"
+          }
+        }
+      }
+    ]
+DEFINITION
 
 }
 

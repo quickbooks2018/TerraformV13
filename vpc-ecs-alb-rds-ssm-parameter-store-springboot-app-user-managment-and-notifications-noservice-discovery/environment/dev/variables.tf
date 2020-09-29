@@ -17,7 +17,7 @@ variable "cloudwatch-group" {}
 
 variable "aws-region" {}
 
-variable "notification-container-log-stream-prefix" {}
+variable "user-management-container-log-stream-prefix" {}
 
 # Task Definition User-Management Service
 variable "task-definition-name-user-management-service" {}
@@ -26,3 +26,6 @@ variable "task-definition-cpu" {}
 
 variable "task-definition-memory" {}
 
+# Task Definition Notification Service
+
+variable "task-definition-name-notification-service" {}
