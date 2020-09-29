@@ -38,7 +38,7 @@ resource "aws_lb_listener_rule" "aws-lb-listener-rule-port-80-path" {
   }
 }
 
-# Custom Rule
+# Custom Rule for svc-user-management
 
 resource "aws_lb_listener_rule" "aws-lb-listener-rule-port-80-rule-for-user-management" {
   listener_arn = aws_alb_listener.frontend-listner-80.arn
@@ -50,6 +50,22 @@ resource "aws_lb_listener_rule" "aws-lb-listener-rule-port-80-rule-for-user-mana
   condition {
     path_pattern {
       values = [var.user-management-path]
+    }
+  }
+}
+
+# Custom Rule for svc-notifications
+
+resource "aws_lb_listener_rule" "aws-lb-listener-rule-port-80-rule-for-notification" {
+  listener_arn = aws_alb_listener.frontend-listner-80.arn
+  priority = 2
+  action {
+    type = "forward"
+    target_group_arn = var.notification-target-group-arn
+  }
+  condition {
+    path_pattern {
+      values = [var.notification-target-path-path]
     }
   }
 }

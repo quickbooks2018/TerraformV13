@@ -1,7 +1,18 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.8.0"
+    }
+  }
+  required_version = ">= 0.13"
+}
+
+# Configure the AWS Provider
 provider "aws" {
   region = "us-east-1"
- # version = "~> 3.7.0"
 }
+
 
 
 #####
@@ -175,9 +186,12 @@ module "alb" {
   # ALB Default Rules
   rule-default-path                   = "/"
   # Custom Rules & Tg
+  # User-Management
   user-management-target-group-arn    = module.service-user-management-alb-tg.target-group-arn
   user-management-path                = "/usermgmt/*"
-
+  # Notification
+  notification-target-group-arn       = module.service-notification-alb-tg.target-group-arn
+  notification-target-path-path       = "/notification*"
 }
 
 # ECS Fargate Cluster
@@ -195,7 +209,9 @@ module "aws-ecs-task-definition-user-management" {
   ecs_task_definition_name     = var.task-definition-name-user-management-service
   task-definition-cpu          = var.task-definition-cpu
   task-definition-memory       = var.task-definition-memory
-  cloudwatch-group             = var.cloudwatch-group
+  cloudwatch-group             = var.cloudwatch-group-svc-user-management
+  task-execution-policy-name   = "task-execution-policy-svc-user-management"
+  task-execution-role          = "task-execution-role-svc-user-management"
   container-definitions        = <<DEFINITION
   [
       {
@@ -211,19 +227,19 @@ module "aws-ecs-task-definition-user-management" {
         "secrets": [
                 {
                     "name": "AWS_RDS_HOSTNAME",
-                    "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_HOSTNAME"
+                    "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/RDS_HOSTNAME"
                 },
                  {
                       "name": "AWS_RDS_DB_NAME",
-                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_DB_NAME"
+                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/RDS_DB_NAME"
                   },
                   {
                       "name": "AWS_RDS_USERNAME",
-                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_USERNAME"
+                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/RDS_USERNAME"
                   },
                   {
                       "name": "AWS_RDS_PASSWORD",
-                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_DB_PASSWORD"
+                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/RDS_DB_PASSWORD"
                   }
             ],
                 "environment": [
@@ -239,7 +255,7 @@ module "aws-ecs-task-definition-user-management" {
         "logConfiguration": {
           "logDriver": "awslogs",
           "options": {
-            "awslogs-group": "${var.cloudwatch-group}",
+            "awslogs-group": "${var.cloudwatch-group-svc-user-management}",
             "awslogs-region": "${var.aws-region}",
             "awslogs-stream-prefix": "${var.user-management-container-log-stream-prefix}"
           }
@@ -256,8 +272,8 @@ DEFINITION
 module "service-user-management-alb-tg" {
   source = "../../modules/aws-alb-tg-type-ip"
   #Application Load Balancer Target Group
-  alb-tg-name               = "tg-user-management"
-  target-group-port         = "80"
+  alb-tg-name               = "tg-svc-user-management"
+  target-group-port         = "8095"
   target-group-protocol     = "HTTP"
   target-type               = "ip"
   deregistration_delay      = "1"
@@ -273,6 +289,31 @@ module "service-user-management-alb-tg" {
   matcher                   = "200,202"
 
 }
+
+
+# ALB Custom Target Group ---> ECS-->Service--> svc-notification
+
+module "service-notification-alb-tg" {
+  source = "../../modules/aws-alb-tg-type-ip"
+  #Application Load Balancer Target Group
+  alb-tg-name               = "tg-svc-notifications"
+  target-group-port         = "8096"
+  target-group-protocol     = "HTTP"
+  target-type               = "ip"
+  deregistration_delay      = "1"
+  vpc-id                    = module.vpc.vpc-id
+  # Health
+  health-check              = true
+  interval                  = "5"
+  path                      = "/notification/health-status"
+  port                      = "8096"
+  protocol                  = "HTTP"
+  timeout                   = "3"
+  unhealthy-threshold       = "3"
+  matcher                   = "200,202"
+
+}
+
 
 # ECS Service Setup ---> svc-user-management
 
@@ -325,53 +366,47 @@ module "aws-ecs-task-definition-notification-service" {
   ecs_task_definition_name     = var.task-definition-name-notification-service
   task-definition-cpu          = var.task-definition-cpu
   task-definition-memory       = var.task-definition-memory
-  cloudwatch-group             = var.cloudwatch-group
+  task-execution-policy-name   = "task-execution-policy-svc-notification"
+  task-execution-role          = "task-execution-role-svc-notification"
+  cloudwatch-group             = var.cloudwatch-group-notification-service
   container-definitions        = <<DEFINITION
   [
       {
-        "name": "${var.microservice-user-management-container-name}",
-        "image": "${var.microservice-user-management-repository-uri}",
+        "name": "${var.microservice-notification-container-name}",
+        "image": "${var.microservice-notification-repository-uri}",
         "essential": true,
         "portMappings": [
           {
-            "containerPort": ${var.microservice-user-management-fargate-container-port},
-            "hostPort": ${var.microservice-user-management-fargate-container-port}
+            "containerPort": ${var.microservice-notification-fargate-container-port},
+            "hostPort": ${var.microservice-notification-fargate-container-port}
           }
         ],
         "secrets": [
                 {
-                    "name": "AWS_RDS_HOSTNAME",
-                    "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_HOSTNAME"
+                    "name": "AWS_MAIL_SERVER_USERNAME",
+                    "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/MAIL_SERVER_USERNAME"
                 },
                  {
-                      "name": "AWS_RDS_DB_NAME",
-                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_DB_NAME"
+                      "name": "AWS_MAIL_SERVER_PASSWORD",
+                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/MAIL_SERVER_PASSWORD"
                   },
                   {
-                      "name": "AWS_RDS_USERNAME",
-                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_USERNAME"
-                  },
-                  {
-                      "name": "AWS_RDS_PASSWORD",
-                     "valueFrom": "arn:aws:ssm:us-east-1:444389401196:parameter/RDS_DB_PASSWORD"
+                      "name": "AWS_MAIL_SERVER_FROM_ADDRESS",
+                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/MAIL_SERVER_FROM_ADDRESS"
                   }
             ],
                 "environment": [
                 {
-                    "name": "AWS_RDS_PORT",
-                    "value": "3306"
-                },
-                {
-                      "name": "NOTIFICATION_SERVICE_PORT",
-                     "value": "80"
-                  }
+                    "name": "AWS_MAIL_SERVER_HOST",
+                    "value": "email-smtp.us-east-1.amazonaws.com"
+                }
             ],
         "logConfiguration": {
           "logDriver": "awslogs",
           "options": {
-            "awslogs-group": "${var.cloudwatch-group}",
+            "awslogs-group": "${var.cloudwatch-group-notification-service}",
             "awslogs-region": "${var.aws-region}",
-            "awslogs-stream-prefix": "${var.user-management-container-log-stream-prefix}"
+            "awslogs-stream-prefix": "${var.notification-container-log-stream-prefix}"
           }
         }
       }
@@ -379,4 +414,34 @@ module "aws-ecs-task-definition-notification-service" {
 DEFINITION
 
 }
+
+
+# ECS Service Setup ---> svc-notification
+
+module "aws-ecs-service-notification" {
+  source = "../../modules/aws-ecs-service"
+  aws-ecscluster-name                 = module.ecs.aws-ecs-cluster-name
+  aws-ecs-service-name                = "svc-notification"
+  ecs-cluster-id                      = module.ecs.aws-ecs-cluster-id
+  deployment-minimum-healthy-percent  = "100"
+  deployment-maximum-percent          = "200"
+  security-groups                     = [module.alb-ref.aws_security_group_default]
+  private-subnets                     = module.vpc.private-subnet-ids
+  assign-public-ip                    = "false"
+  task-definition                     = module.aws-ecs-task-definition-notification-service.ecs-task-definitions-arn
+  # Auto Scaling of Tasks
+  min-capacity                        = 2
+  max-capacity                        = 5
+  desired-count                       = 2
+  # CPU-Exceeds-Percentage
+  cpu-exceeds-percentage              = 80
+  # Memory-Exceeds-Percentage
+  memory-exceeds-percentage           = 90
+  health-check-grace-period-seconds   = "180"
+  target-group-arn                    = module.service-notification-alb-tg.target-group-arn
+  container-name                      = var.microservice-notification-container-name
+  container-port                      = var.microservice-notification-fargate-container-port
+  depends_on                          = [module.alb]
+}
+
 

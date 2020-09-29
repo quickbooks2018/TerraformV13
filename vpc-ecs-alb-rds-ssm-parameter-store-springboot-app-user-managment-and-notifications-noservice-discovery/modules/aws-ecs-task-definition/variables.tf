@@ -15,3 +15,7 @@ variable "task-definition-memory" {
 }
 
 variable "cloudwatch-group" {}
+
+variable "task-execution-policy-name" {}
+
+variable "task-execution-role" {}

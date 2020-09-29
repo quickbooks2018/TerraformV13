@@ -1,11 +1,13 @@
 #!/bin/bash
 #Purpose: Secrets Management for ECS Service from SSM Parameter Store
 
+# User-Management Service
+
 # AWS_RDS_HOSTNAME
 aws rds describe-db-instances --db-instance-identifier springboot-db | grep -i -A 4 endpoint
 
 
-aws ssm put-parameter --name RDS_HOSTNAME --value "springboot-db.cm2z8nvmnemh.us-east-1.rds.amazonaws.com" --type SecureString --overwrite
+aws ssm put-parameter --name RDS_HOSTNAME --value "springboot-db.cpiqpzdwok8i.us-east-1.rds.amazonaws.com" --type SecureString --overwrite
 aws ssm get-parameters --names RDS_HOSTNAME | grep -i arn
 
 
@@ -26,8 +28,26 @@ aws ssm get-parameters --names RDS_DB_PASSWORD | grep -i arn
 #aws ssm put-parameter --name NOTIFICATION_SERVICE_HOST --value "cloudgeeks-alb-368248622.us-east-1.elb.amazonaws.com" --type SecureString --overwrite
 #aws ssm get-parameters --names NOTIFICATION_SERVICE_HOST | grep -i arn
 
+# Notification Service
+# Virginia Region
+
+# Server Name:
+# email-smtp.us-east-1.amazonaws.com
+# Port:	25, 465 or 587
+# Use Transport Layer Security (TLS):	Yes
+# Authentication:	Your SMTP credentials. See below for more information.
 
 
+AWS_MAIL_SERVER_HOST="email-smtp.us-east-1.amazonaws.com"
+                                                        # Put ses_user_access_key
+aws ssm put-parameter --name MAIL_SERVER_USERNAME --value "AKIASOSWRT24IDOLSAXZ" --type SecureString --overwrite
+aws ssm get-parameters --names MAIL_SERVER_USERNAME | grep -i arn
+                                                       # Put ses_user_secret_access_key
+aws ssm put-parameter --name MAIL_SERVER_PASSWORD --value "BOtBjMaiMAMd+Pbc7aUtcSrRdnO2Jz1EMLcjT2ZYG+9A" --type SecureString --overwrite
+aws ssm get-parameters --names MAIL_SERVER_PASSWORD | grep -i arn
+
+aws ssm put-parameter --name MAIL_SERVER_FROM_ADDRESS --value "quickbooks2018@gmail.com" --type SecureString --overwrite
+aws ssm get-parameters --names MAIL_SERVER_FROM_ADDRESS | grep -i arn
 
 
 

@@ -34,9 +34,16 @@ variable "rule-default-path" {
   default = "/"
 }
 
-# Customer Rules
+# Customer Rules for User-Management
 variable "user-management-target-group-arn" {}
 
 variable "user-management-path" {
+  default = "/"
+}
+
+# Custom Rules for Notification
+variable "notification-target-group-arn" {}
+
+variable "notification-target-path-path" {
   default = "/"
 }

@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 # ECS Task Execution Policy
 
 resource "aws_iam_policy" "ecs-task-execution-policy" {
-  name = "ecs-task-execution-policy"
+  name = var.task-execution-policy-name
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -44,7 +44,7 @@ EOF
 # IAM Role Task Execution Role
 
 resource "aws_iam_role" "ecs-task-execution-role" {
-  name               = "ecs-task-execution-role"
+  name               = var.task-execution-role
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -71,8 +71,5 @@ resource "aws_iam_policy_attachment" "ecs-task-execution-policy-attach" {
 resource "aws_cloudwatch_log_group" "aws-cloudwatch-log-group" {
   name = var.cloudwatch-group
 
-  tags = {
-    Environment = "dev"
-    Application = "microapp"
-  }
+
 }
