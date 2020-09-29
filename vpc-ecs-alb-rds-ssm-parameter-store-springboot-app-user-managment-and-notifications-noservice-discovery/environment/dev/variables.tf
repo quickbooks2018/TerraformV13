@@ -5,7 +5,7 @@ variable "rds-username" {}
 variable "rds-password" {}
 
 
-# Container Definitions for Notification Container
+# Container Definitions for User-Management Container
 variable "microservice-user-management-container-name" {}
 
 variable "microservice-user-management-repository-uri" {}
@@ -19,7 +19,7 @@ variable "aws-region" {}
 
 variable "notification-container-log-stream-prefix" {}
 
-# Task Definition Notification Service
+# Task Definition User-Management Service
 variable "task-definition-name-user-management-service" {}
 
 variable "task-definition-cpu" {}

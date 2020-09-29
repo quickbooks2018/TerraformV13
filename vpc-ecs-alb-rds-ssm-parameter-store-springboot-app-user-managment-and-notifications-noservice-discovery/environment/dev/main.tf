@@ -1,5 +1,6 @@
 provider "aws" {
   region = "us-east-1"
+ # version = "~> 3.7.0"
 }
 
 
@@ -23,6 +24,7 @@ module "vpc" {
   vpc-database_subnets-cidr           = ["10.20.7.0/24", "10.20.8.0/24"]
 }
 
+# RDS mysql
 
 module "rds-mysql" {
   source                                                           = "../../modules/aws-rds-mysql"
@@ -51,6 +53,7 @@ module "rds-mysql" {
 }
 
 
+# Security Group
 
 module "sg1" {
   source              = "../../modules/aws-sg-cidr"
@@ -62,6 +65,8 @@ module "sg1" {
   security_group_name = "ecs"
   vpc_id              = module.vpc.vpc-id
 }
+
+# RDS Security Group ---> allowed aws-ecs-service-user-management
 
 module "rds-sg" {
   source                  = "../../modules/aws-sg-ref-v2"
@@ -77,12 +82,15 @@ module "rds-sg" {
 
 
 
+# Elastic IP for EC2---> ECS Service Load Testing for ECS ---> endpoint(alb)
 
 module "apachebench-eip" {
   source = "../../modules/aws-eip/ecs"
   name                         = "apachebench"
   instance                     = module.ec2-apachebench.id[0]
 }
+
+# ECS Service Load Testing for ECS ---> endpoint(alb)
 
 module "ec2-apachebench" {
   source                        = "../../modules/aws-ec2"
@@ -104,6 +112,7 @@ module "ec2-apachebench" {
 
 
 
+# ALB Security Group
 
 module "alb-sg" {
   source              = "../../modules/aws-sg-cidr"
@@ -116,6 +125,8 @@ module "alb-sg" {
   vpc_id              = module.vpc.vpc-id
 }
 
+# ALB Security Group used as a referenced in ---> ECS ---> module "aws-ecs-service-user-management
+
 module "alb-ref" {
   source                  = "../../modules/aws-sg-ref-v2"
   namespace               = "cloudgeeks.ca"
@@ -126,6 +137,9 @@ module "alb-ref" {
   security_group_name     = "ALB-Ref"
   vpc_id                  = module.vpc.vpc-id
 }
+
+
+# ALB Default TG
 
 module "alb-default-tg" {
   source = "../../modules/aws-alb-tg-type-instance"
@@ -147,6 +161,7 @@ module "alb-default-tg" {
 
 }
 
+# ALB Application Load Balancer
 
 module "alb" {
   source = "../../modules/aws-alb"
@@ -165,7 +180,7 @@ module "alb" {
 
 }
 
-
+# ECS Fargate Cluster
 module "ecs" {
   source                    = "../../modules/aws-ecs"
   name                      = "cloudgeeks-ecs-dev"
@@ -173,6 +188,7 @@ module "ecs" {
   depends_on                = [module.alb]
 }
 
+# ECS Task Definition for ---> task-definition-user-management
 
 module "aws-ecs-task-definition-user-management" {
   source                       = "../../modules/aws-ecs-task-definition"
@@ -235,7 +251,8 @@ DEFINITION
 }
 
 
-# ALB TG
+# ALB Custom Target Group ---> ECS-->Service--> svc-user-management
+
 module "service-user-management-alb-tg" {
   source = "../../modules/aws-alb-tg-type-ip"
   #Application Load Balancer Target Group
@@ -257,7 +274,7 @@ module "service-user-management-alb-tg" {
 
 }
 
-# ECS
+# ECS Service Setup ---> svc-user-management
 
 module "aws-ecs-service-user-management" {
   source = "../../modules/aws-ecs-service"
@@ -291,7 +308,7 @@ module "aws-ecs-service-user-management" {
 //  depends_on    = [module.aws-ecs-microservice-user-management]
 //}
 
-### SES SMTP ###
+### AWS SES SMTP ###
 
 module "smtp-ses" {
   source = "../../modules/aws-ses"
