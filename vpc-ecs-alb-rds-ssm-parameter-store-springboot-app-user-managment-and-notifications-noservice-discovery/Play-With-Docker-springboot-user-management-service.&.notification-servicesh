@@ -5,6 +5,9 @@
 # Create a network
 docker network create springboot --attachable
 
+
+# Springboot User_Management Service
+#-------------------------
 # Mariadb Setup
 docker volume create mariadb
 docker run --name mariadb -e MARIADB_DATABASE="springbootdb" -e MARIADB_ROOT_PASSWORD="quickbooks2018" -v mariadb:/bitnami --network="springboot" --restart unless-stopped -d bitnami/mariadb:latest
@@ -18,5 +21,14 @@ docker run --name phpmyadmin --network="springboot" --link mariadb:db -id -p 808
 docker run --name user-management --network="springboot" -e AWS_RDS_HOSTNAME="mariadb" -e NOTIFICATION_SERVICE_HOST="user-management" -e NOTIFICATION_SERVICE_PORT=80 -e AWS_RDS_PORT=3306 -e AWS_RDS_DB_NAME="springbootdb" -e AWS_RDS_USERNAME=root -e AWS_RDS_PASSWORD="quickbooks2018" --link mariadb:db -p 8095:8095 -p 80:8095 --restart unless-stopped -id quickbooks2018/microservice-user-management:latest
 
 
-#Health Check  ---> /usermgmt/health-status
-#END
+# Health Check  ---> /usermgmt/health-status
+
+
+
+# Springboot Notification Service
+# -------------------------
+# Smtp Setup AWS SES
+docker run --name aws-ses --network="springboot" -e AWS_MAIL_SERVER_HOST="email-smtp.us-east-1.amazonaws.com" -e AWS_MAIL_SERVER_USERNAME="" -e AWS_MAIL_SERVER_PASSWORD="" -e "AWS_MAIL_SERVER_FROM_ADDRESS"="" -p 9000:8096 --restart unless-stopped -id quickbooks2018/microservice-notifications:latest
+
+# Health Check ---> /notification/health-status
+# END
