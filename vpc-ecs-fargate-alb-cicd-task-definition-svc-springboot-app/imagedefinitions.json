@@ -1,0 +1,6 @@
+[
+  {
+    "name": "cloudgeeks-springboot",
+    "imageUri": "049043308513.dkr.ecr.us-east-1.amazonaws.com/cloudgeeksinc:cloudgeeksinc-springboot-app-v1"
+  }
+]

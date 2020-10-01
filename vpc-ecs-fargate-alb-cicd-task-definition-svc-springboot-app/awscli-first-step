@@ -1,0 +1,8 @@
+aws ecr create-repository --repository-name cloudgeeksinc --image-scanning-configuration scanOnPush=true --region us-east-1
+
+aws s3api create-bucket --bucket cloudgeeks-cicd --region us-east-1
+
+aws s3api put-bucket-versioning --bucket cloudgeeks-cicd --versioning-configuration Status=Enabled
+
+
+aws codecommit create-repository --repository-name cloudgeeks-codecommit --repository-description "This is CloudgeeksInc cloudgeeks.ca"

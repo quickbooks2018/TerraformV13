@@ -1,0 +1,15 @@
+# https://docs.aws.amazon.com/codepipeline/latest/userguide/file-reference.html
+
+# If your pipeline has skipped the build stage, you must manually create the JSON file and upload it to your source repository so the source action can provide the artifact. Create the file using a text editor, and name the file or use the default imagedefinitions.json file name. Push the image definitions file to your source repository.
+
+# Note
+If your source repository is an Amazon S3 bucket, remember to zip the JSON file.
+
+# Put mentioned below in Terraform ---> container definition
+
+[
+{
+"name": "cloudgeeks-springboot",
+"imageUri": "049043308513.dkr.ecr.us-east-1.amazonaws.com/cloudgeeksinc:cloudgeeksinc-springboot-app-v1"
+}
+]
