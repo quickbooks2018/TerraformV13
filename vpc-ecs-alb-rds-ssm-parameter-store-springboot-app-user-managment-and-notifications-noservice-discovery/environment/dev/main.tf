@@ -227,20 +227,24 @@ module "aws-ecs-task-definition-user-management" {
         "secrets": [
                 {
                     "name": "AWS_RDS_HOSTNAME",
-                    "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/RDS_HOSTNAME"
+                    "valueFrom": "arn:aws:ssm:us-east-1:392292519055:parameter/RDS_HOSTNAME"
                 },
                  {
                       "name": "AWS_RDS_DB_NAME",
-                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/RDS_DB_NAME"
+                     "valueFrom": "arn:aws:ssm:us-east-1:392292519055:parameter/RDS_DB_NAME"
                   },
                   {
                       "name": "AWS_RDS_USERNAME",
-                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/RDS_USERNAME"
+                     "valueFrom": "arn:aws:ssm:us-east-1:392292519055:parameter/RDS_USERNAME"
                   },
                   {
                       "name": "AWS_RDS_PASSWORD",
-                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/RDS_DB_PASSWORD"
-                  }
+                     "valueFrom": "arn:aws:ssm:us-east-1:392292519055:parameter/RDS_DB_PASSWORD"
+                  },
+                  {
+                       "name": "NOTIFICATION_SERVICE_HOST",
+                     "valueFrom": "arn:aws:ssm:us-east-1:392292519055:parameter/NOTIFICATION_SERVICE_HOST"
+                   }
             ],
                 "environment": [
                 {
@@ -384,15 +388,15 @@ module "aws-ecs-task-definition-notification-service" {
         "secrets": [
                 {
                     "name": "AWS_MAIL_SERVER_USERNAME",
-                    "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/MAIL_SERVER_USERNAME"
+                    "valueFrom": "arn:aws:ssm:us-east-1:392292519055:parameter/MAIL_SERVER_USERNAME"
                 },
                  {
                       "name": "AWS_MAIL_SERVER_PASSWORD",
-                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/MAIL_SERVER_PASSWORD"
+                     "valueFrom": "arn:aws:ssm:us-east-1:392292519055:parameter/MAIL_SERVER_PASSWORD"
                   },
                   {
                       "name": "AWS_MAIL_SERVER_FROM_ADDRESS",
-                     "valueFrom": "arn:aws:ssm:us-east-1:168758976184:parameter/MAIL_SERVER_FROM_ADDRESS"
+                     "valueFrom": "arn:aws:ssm:us-east-1:392292519055:parameter/MAIL_SERVER_FROM_ADDRESS"
                   }
             ],
                 "environment": [
