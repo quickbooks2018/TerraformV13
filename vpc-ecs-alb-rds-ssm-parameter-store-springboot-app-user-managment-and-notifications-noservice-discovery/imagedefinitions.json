@@ -1,6 +1,0 @@
-[
-  {
-    "name": "ecs-spring-boot-aws-secrets-manager",
-    "imageUri": "327382219660.dkr.ecr.us-east-1.amazonaws.com/ecs-spring-boot-aws-secrets-manager:latest"
-  }
-]
