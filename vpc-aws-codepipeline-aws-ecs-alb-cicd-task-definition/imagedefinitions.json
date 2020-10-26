@@ -1,0 +1,6 @@
+[
+  {
+    "name": "aws-codepipeline",
+    "imageUri": "YOUR-ECR-IMAGE-URI"
+  }
+]
