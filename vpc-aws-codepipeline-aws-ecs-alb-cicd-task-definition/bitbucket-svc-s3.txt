@@ -1,0 +1,11 @@
+AWS_ACCESS_KEY_ID  AKIAWE7POL2PVRNYJ6JZ
+AWS_SECRET_ACCESS_KEY  7gvSH6uzFR+62XD9xy6vKerm0F7Zmo0AcxdsjTC4
+AWS_DEFAULT_REGION  us-east-1
+
+
+Basic usage variables 
+AWS_ACCESS_KEY_ID (*): Your AWS access key.
+
+AWS_SECRET_ACCESS_KEY (*): Your AWS secret access key. Make sure that you save it as a secured variable.
+
+AWS_DEFAULT_REGION (*):  The AWS region code (us-east-1, us-west-2, etc.) of the region containing the AWS resource(s). For more information, The AWS region code (us-east-1, us-west-2, etc.) of the region containing the AWS resource(s). For more information, see Regions and Endpoints.

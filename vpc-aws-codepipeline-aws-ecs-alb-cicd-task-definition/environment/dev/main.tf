@@ -104,7 +104,7 @@ module "alb" {
   enable-deletion-protection = "false"
   target-group-arn           = module.service-alb-tg.target-group-arn
   # ALB Rules
-  rule-path                  = "/blue*"
+  rule-path                  = "/*"
 
 }
 
@@ -161,7 +161,7 @@ module "service-alb-tg" {
   # Health
   health-check              = true
   interval                  = "5"
-  path                      = "/blue/index.html"
+  path                      = "/index.html"
   port                      = "80"
   protocol                  = "HTTP"
   timeout                   = "3"

@@ -1,0 +1,6 @@
+[
+  {
+    "name": "aws-codepipeline",
+    "imageUri": "quickbooks2018/green:latest"
+  }
+]
