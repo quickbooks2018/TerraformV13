@@ -1,8 +1,3 @@
-#Creating EC2-Key Pair
-provider "aws" {
-  region = var.region
-}
-
 #########
 # Labels
 ########
