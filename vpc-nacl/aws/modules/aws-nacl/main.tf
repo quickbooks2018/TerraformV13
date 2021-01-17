@@ -29,28 +29,49 @@ resource "aws_network_acl" "main" {
   ingress {
     protocol   = "tcp"
     rule_no    = 100
-    action     = "allow"
+    action     = "deny"
     cidr_block = "0.0.0.0/0"
-    from_port  = 443
-    to_port    = 443
+    from_port  = 22
+    to_port    = 22
   }
 
-  # Allow Ephemeral Ports
   ingress {
     protocol   = "tcp"
     rule_no    = 200
-    action     = "allow"
+    action     = "deny"
     cidr_block = "0.0.0.0/0"
-    from_port  = 1024
-    to_port    = 65535
+    from_port  = 3389
+    to_port    = 3389
   }
+
   ingress {
-    protocol   = "udp"
+    protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
+    cidr_block = "20.20.0.0/16"
+    from_port  = 3306
+    to_port    = 3306
+  }
+
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 400
+    action     = "deny"
     cidr_block = "0.0.0.0/0"
-    from_port  = 1024
-    to_port    = 65535
+    from_port  = 3306
+    to_port    = 3306
+  }
+
+
+
+  # Allow Ephemeral Ports
+  ingress {
+    protocol   = -1
+    rule_no    = 2000
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 0
+    to_port    = 0
   }
 
   tags = {

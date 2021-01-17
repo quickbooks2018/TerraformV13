@@ -47,10 +47,18 @@ module "sg2" {
 
 module "nacl" {
   source     = "../../modules/aws-nacl"
-  name       = "cloudgeeks-nacl"
+  name       = "cloudgeeks-public-nacl"
   subnet-ids = module.vpc.public-subnet-ids
   vpc_id     = module.vpc.vpc-id
 }
+
+module "nacl-private-subnets" {
+  source     = "../../modules/aws-nacl"
+  name       = "cloudgeeks-private-nacl"
+  subnet-ids = module.vpc.private-subnet-ids
+  vpc_id     = module.vpc.vpc-id
+}
+
 
 
 
