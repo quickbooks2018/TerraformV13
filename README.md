@@ -17,7 +17,9 @@ c terraform apply
 
 3. terraform output -module=module-name
 
-4.terraform plan -target=module.cloudgeeks.ca-vpc ---> only plan specific modules   or terraform apply -target resource_type.resource_logical_name
+4.terraform plan -target=module.cloudgeeks.ca-vpc ---> only plan specific modules   or terraform apply -target resource_type.resource_logical_name  
+
+Example:  terraform.exe apply -target aws_ecs_service.aws-ecs-service-driver-prod
 
 5.terraform apply -target=module.cloudgeeks.ca-vpc ---> only apply specific modules
 
